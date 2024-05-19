@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 検証
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  StateLambda1:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: state-lambda-1
+      CodeUri: state-lambda-1/
+      Handler: app.lambdaHandler
+      Runtime: nodejs20.x
+
+  StateLambda2:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: state-lambda-2
+      CodeUri: state-lambda-2
+      Handler: app.lambdaHandler
+      Runtime: nodejs20.x
+
+  TestStepFunction:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: sfn.asl.json
+      DefinitionSubstitutions:
+        StateLambda1: !GetAtt StateLambda1.Arn
+        StateLambda2: !GetAtt StateLambda2.Arn
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref StateLambda1
+        - LambdaInvokePolicy:
+            FunctionName: !Ref StateLambda2
+
+Outputs:
+  StateLambda1:
+    Description: Step Functionsで利用する1つ目のLambda
+    Value: !GetAtt StateLambda1.Arn
+  StateLambda2:
+    Description: Step Functionsで利用する2つ目のLambda
+    Value: !GetAtt StateLambda2.Arn

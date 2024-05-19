@@ -1,0 +1,13 @@
+version = 0.1
+[dev]
+[dev.deploy]
+[dev.deploy.parameters]
+stack_name = "sam-app"
+s3_bucket = "CloudFormationテンプレートをアップロードするS3バケット指定する"
+s3_prefix = "アップロード先のS3のプレフィックスを指定する"
+profile = "deployで利用するプロフィール(アカウント)へ変更する"
+region = "ap-northeast-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+image_repositories = []
